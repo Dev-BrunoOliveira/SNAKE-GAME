@@ -81,21 +81,21 @@ function checkCollision() {
   }
 }
 function clearBoard() {
-  context.fillStyle = "black";
+  context.fillStyle = "#fff";
   context.fillRect(0, 0, gameBoard.width, gameBoard.height);
 }
 
 function drawFood() {
-  context.fillStyle = "black";
-  context.strokeStyle = "#7929E9";
+  context.fillStyle = "#B2F0AF";
+  context.strokeStyle = "black";
   context.fillRect(food.x * tileSize, food.y * tileSize, tileSize, tileSize);
   context.strokeRect(food.x * tileSize, food.y * tileSize, tileSize, tileSize);
 }
 
 function drawSnake() {
   snake.forEach((part) => {
-    context.fillStyle = "black";
-    context.strokeStyle = "#7929E9";
+    context.fillStyle = "#B2F0AF";
+    context.strokeStyle = "black";
     context.fillRect(part.x * tileSize, part.y * tileSize, tileSize, tileSize);
     context.strokeRect(part.x * tileSize, part.y * tileSize, tileSize, tileSize);
   });
