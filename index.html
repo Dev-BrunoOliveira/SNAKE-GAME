@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Snake Game</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style.css" />
 </head>
 <body>
     <h1>Jogo da Cobrinha</h1>
@@ -13,6 +13,14 @@
         <span id="score">0</span>
     </div>
     <canvas id="game-board" width="400" height="400"></canvas>
+    <div class="controls">
+        <button id="start-button">Iniciar Jogo</button>
+    </div>
+    <div id="game-over" class="hidden">
+        <div class="game-over-message">Game Over! Pressione "Reiniciar Jogo" para jogar novamente.</div>
+    </div>
     <script src="script.js"></script>
+    <audio id="eatSound" src="https://www.soundjay.com/button/sounds/button-3.mp3"></audio>
+    <audio id="gameOverSound" src="https://www.soundjay.com/misc/sounds/fail-buzzer-01.mp3"></audio>
 </body>
 </html>

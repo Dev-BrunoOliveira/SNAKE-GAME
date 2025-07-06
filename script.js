@@ -1,25 +1,45 @@
 const gameBoard = document.getElementById("game-board");
 const context = gameBoard.getContext("2d");
 const scoreElement = document.getElementById("score");
+const startButton = document.getElementById("start-button");
+const restartButton = document.getElementById("restart-button");
+const gameOverElement = document.getElementById("game-over");
+const gameOverSound = document.getElementById("gameOverSound");
+const eatSound = document.getElementById("eatSound");
 
 const tileSize = 20;
-let snake = [{ x: 10, y: 10 }];
-let food = { x: 15, y: 15 };
-let score = 0;
-let dx = 0;
-let dy = 0;
-let isGameOver = false;
+let snake, food, score, dx, dy, isGameOver;
+let gameInterval;
+
+function initGame() {
+  if (gameInterval) {
+    clearTimeout(gameInterval);
+  }
+  
+  snake = [{ x: 10, y: 10 }];
+  food = { x: 15, y: 15 };
+  score = 0;
+  dx = 0;
+  dy = 0;
+  isGameOver = false;
+  scoreElement.textContent = score;
+  gameOverElement.style.display = "none"; 
+
+  clearBoard();
+  drawFood();
+  drawSnake();
+  
+  
+  gameInterval = setTimeout(main, 100);
+}
 
 function main() {
   if (isGameOver) {
-    alert(
-      `Fim de Jogo! Sua pontuação foi: ${score}. Pressione OK para recomeçar.`
-    );
-    document.location.reload();
+    showGameOver();
     return;
   }
 
-  setTimeout(() => {
+  gameInterval = setTimeout(() => {
     clearBoard();
     drawFood();
     moveSnake();
@@ -29,31 +49,55 @@ function main() {
   }, 100);
 }
 
-main();
+if (!isGameOver) {
+    gameInterval = setTimeout(main, 100);
+  }
 
+function showGameOver() {
+  gameOverSound.play();
+  gameOverElement.classList.remove('hidden');
+}
+
+function checkCollision() {
+  const head = snake[0];
+  const boardWidthInTiles = gameBoard.width / tileSize;
+  const boardHeightInTiles = gameBoard.height / tileSize;
+
+  if (
+    head.x < 0 ||
+    head.x >= boardWidthInTiles ||
+    head.y < 0 ||
+    head.y >= boardHeightInTiles
+  ) {
+    isGameOver = true;
+    return;
+  }
+
+  for (let i = 1; i < snake.length; i++) {
+    if (snake[i].x === head.x && snake[i].y === head.y) {
+      isGameOver = true;
+      return;
+    }
+  }
+}
 function clearBoard() {
-  context.fillStyle = "#ffff";
+  context.fillStyle = "black";
   context.fillRect(0, 0, gameBoard.width, gameBoard.height);
 }
 
 function drawFood() {
-  context.fillStyle = "lightgreen";
-  context.strokeStyle = "darkgreen";
+  context.fillStyle = "black";
+  context.strokeStyle = "#7929E9";
   context.fillRect(food.x * tileSize, food.y * tileSize, tileSize, tileSize);
   context.strokeRect(food.x * tileSize, food.y * tileSize, tileSize, tileSize);
 }
 
 function drawSnake() {
   snake.forEach((part) => {
-    context.fillStyle = "lightgreen";
-    context.strokeStyle = "darkgreen";
+    context.fillStyle = "black";
+    context.strokeStyle = "#7929E9";
     context.fillRect(part.x * tileSize, part.y * tileSize, tileSize, tileSize);
-    context.strokeRect(
-      part.x * tileSize,
-      part.y * tileSize,
-      tileSize,
-      tileSize
-    );
+    context.strokeRect(part.x * tileSize, part.y * tileSize, tileSize, tileSize);
   });
 }
 
@@ -135,3 +179,6 @@ function checkCollision() {
     }
   }
 }
+
+startButton.addEventListener("click", initGame);
+restartButton.addEventListener("click", initGame);
