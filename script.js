@@ -2,183 +2,162 @@ const gameBoard = document.getElementById("game-board");
 const context = gameBoard.getContext("2d");
 const scoreElement = document.getElementById("score");
 const startButton = document.getElementById("start-button");
-const restartButton = document.getElementById("restart-button");
 const gameOverElement = document.getElementById("game-over");
-const gameOverSound = document.getElementById("gameOverSound");
-const eatSound = document.getElementById("eatSound");
+const restartButton = document.getElementById("restart-button");
+
+const mobileControls = document.getElementById("mobile-controls");
+const upButton = document.getElementById("up-button");
+const downButton = document.getElementById("down-button");
+const leftButton = document.getElementById("left-button");
+const rightButton = document.getElementById("right-button");
 
 const tileSize = 20;
-let snake, food, score, dx, dy, isGameOver;
-let gameInterval;
+const boardWidthInTiles = gameBoard.width / tileSize; 
+const boardHeightInTiles = gameBoard.height / tileSize; 
+
+let snake, food, score, dx, dy;
+let gameInterval = null;
 
 function initGame() {
-  if (gameInterval) {
-    clearTimeout(gameInterval);
-  }
-  
-  snake = [{ x: 10, y: 10 }];
-  food = { x: 15, y: 15 };
-  score = 0;
-  dx = 0;
-  dy = 0;
-  isGameOver = false;
-  scoreElement.textContent = score;
-  gameOverElement.style.display = "none"; 
+    if (gameInterval) {
+        clearTimeout(gameInterval);
+    }
 
-  clearBoard();
-  drawFood();
-  drawSnake();
-  
-  
-  gameInterval = setTimeout(main, 100);
+    snake = [{ x: 10, y: 10 }];
+    generateFood(); 
+
+    score = 0;
+    dx = 0;
+    dy = 0;
+    scoreElement.textContent = score;
+    gameOverElement.style.display = "none";
+    startButton.style.display = 'none';
+    if(window.innerWidth <= 600) {
+        mobileControls.style.display = 'flex';
+    }
+
+    main();
 }
 
 function main() {
-  if (isGameOver) {
-    showGameOver();
-    return;
-  }
+    gameInterval = setTimeout(() => {
+        clearBoard();
+        moveSnake(); 
+        
+        const isGameOver = checkCollision();
+        if (isGameOver) {
+            showGameOver();
+            drawFood();
+            drawSnake();
+            return; 
+        }
 
-  gameInterval = setTimeout(() => {
-    clearBoard();
-    drawFood();
-    moveSnake();
-    drawSnake();
-    checkCollision();
-    main();
-  }, 100);
+        drawFood();
+        drawSnake();
+        main();
+    }, 100);
 }
-
-if (!isGameOver) {
-    gameInterval = setTimeout(main, 100);
-  }
 
 function showGameOver() {
-  gameOverSound.play();
-  gameOverElement.classList.remove('hidden');
+    clearTimeout(gameInterval);
+    gameInterval = null;
+    gameOverElement.style.display = "flex";
+    startButton.style.display = 'block';
 }
 
-function checkCollision() {
-  const head = snake[0];
-  const boardWidthInTiles = gameBoard.width / tileSize;
-  const boardHeightInTiles = gameBoard.height / tileSize;
-
-  if (
-    head.x < 0 ||
-    head.x >= boardWidthInTiles ||
-    head.y < 0 ||
-    head.y >= boardHeightInTiles
-  ) {
-    isGameOver = true;
-    return;
-  }
-
-  for (let i = 1; i < snake.length; i++) {
-    if (snake[i].x === head.x && snake[i].y === head.y) {
-      isGameOver = true;
-      return;
-    }
-  }
-}
 function clearBoard() {
-  context.fillStyle = "#fff";
-  context.fillRect(0, 0, gameBoard.width, gameBoard.height);
+    context.fillStyle = "#ffffff";
+    context.fillRect(0, 0, gameBoard.width, gameBoard.height);
 }
 
 function drawFood() {
-  context.fillStyle = "#B2F0AF";
-  context.strokeStyle = "black";
-  context.fillRect(food.x * tileSize, food.y * tileSize, tileSize, tileSize);
-  context.strokeRect(food.x * tileSize, food.y * tileSize, tileSize, tileSize);
+    context.fillStyle = "red";
+    context.strokeStyle = "darkred";
+    context.fillRect(food.x * tileSize, food.y * tileSize, tileSize, tileSize);
+    context.strokeRect(food.x * tileSize, food.y * tileSize, tileSize, tileSize);
 }
 
 function drawSnake() {
-  snake.forEach((part) => {
-    context.fillStyle = "#B2F0AF";
-    context.strokeStyle = "black";
-    context.fillRect(part.x * tileSize, part.y * tileSize, tileSize, tileSize);
-    context.strokeRect(part.x * tileSize, part.y * tileSize, tileSize, tileSize);
-  });
+    snake.forEach((part, index) => {
+        context.fillStyle = index === 0 ? "#004d00" : "green";
+        context.strokeStyle = "black";
+        context.fillRect(part.x * tileSize, part.y * tileSize, tileSize, tileSize);
+        context.strokeRect(part.x * tileSize, part.y * tileSize, tileSize, tileSize);
+    });
 }
 
 function moveSnake() {
-  const head = { x: snake[0].x + dx, y: snake[0].y + dy };
-  snake.unshift(head);
+    const head = { x: snake[0].x + dx, y: snake[0].y + dy };
+    snake.unshift(head);
 
-  if (head.x === food.x && head.y === food.y) {
-    score += 10;
-    scoreElement.textContent = score;
-    generateFood();
-  } else {
-    snake.pop();
-  }
+    if (head.x === food.x && head.y === food.y) {
+        score += 10;
+        scoreElement.textContent = score;
+        generateFood();
+    } else {
+        snake.pop();
+    }
 }
 
 function generateFood() {
-  food.x = Math.floor(Math.random() * (gameBoard.width / tileSize));
-  food.y = Math.floor(Math.random() * (gameBoard.height / tileSize));
+    food = {
+        x: Math.floor(Math.random() * boardWidthInTiles),
+        y: Math.floor(Math.random() * boardHeightInTiles)
+    };
 
-  snake.forEach((part) => {
-    if (part.x === food.x && part.y === food.y) {
-      generateFood();
+    for (const part of snake) {
+        if (part.x === food.x && part.y === food.y) {
+            generateFood(); 
+            break;
+        }
     }
-  });
-}
-
-document.addEventListener("keydown", changeDirection);
-
-function changeDirection(event) {
-  const KEY_LEFT = 37;
-  const KEY_UP = 38;
-  const KEY_RIGHT = 39;
-  const KEY_DOWN = 40;
-
-  const keyPressed = event.keyCode;
-
-  const goingUp = dy === -1;
-  const goingDown = dy === 1;
-  const goingRight = dx === 1;
-  const goingLeft = dx === -1;
-
-  if (keyPressed === KEY_LEFT && !goingRight) {
-    dx = -1;
-    dy = 0;
-  }
-  if (keyPressed === KEY_UP && !goingDown) {
-    dx = 0;
-    dy = -1;
-  }
-  if (keyPressed === KEY_RIGHT && !goingLeft) {
-    dx = 1;
-    dy = 0;
-  }
-  if (keyPressed === KEY_DOWN && !goingUp) {
-    dx = 0;
-    dy = 1;
-  }
 }
 
 function checkCollision() {
-  const head = snake[0];
-  const boardWidthInTiles = gameBoard.width / tileSize;
-  const boardHeightInTiles = gameBoard.height / tileSize;
+    const head = snake[0];
 
-  if (
-    head.x < 0 ||
-    head.x >= boardWidthInTiles ||
-    head.y < 0 ||
-    head.y >= boardHeightInTiles
-  ) {
-    isGameOver = true;
-  }
-
-  for (let i = 1; i < snake.length; i++) {
-    if (snake[i].x === head.x && snake[i].y === head.y) {
-      isGameOver = true;
-      break;
+    if (head.x < 0 || head.x >= boardWidthInTiles || head.y < 0 || head.y >= boardHeightInTiles) {
+        return true;
     }
-  }
+    for (let i = 1; i < snake.length; i++) {
+        if (snake[i].x === head.x && snake[i].y === head.y) {
+            return true;
+        }
+    }
+    return false;
 }
+
+function changeDirection(directionKey) {
+    if(!gameInterval) return; 
+
+    const goingUp = dy === -1;
+    const goingDown = dy === 1;
+    const goingRight = dx === 1;
+    const goingLeft = dx === -1;
+
+    const KEY_LEFT = 37;
+    const KEY_UP = 38;
+    const KEY_RIGHT = 39;
+    const KEY_DOWN = 40;
+
+    if (directionKey === KEY_LEFT && !goingRight) { dx = -1; dy = 0; }
+    if (directionKey === KEY_UP && !goingDown) { dx = 0; dy = -1; }
+    if (directionKey === KEY_RIGHT && !goingLeft) { dx = 1; dy = 0; }
+    if (directionKey === KEY_DOWN && !goingUp) { dx = 0; dy = 1; }
+}
+
+function handleControl(directionKey) {
+    if (!gameInterval) {
+        initGame();
+    }
+    changeDirection(directionKey);
+}
+
+document.addEventListener("keydown", e => handleControl(e.keyCode));
+upButton.addEventListener('click', () => handleControl(38));
+downButton.addEventListener('click', () => handleControl(40));
+leftButton.addEventListener('click', () => handleControl(37));
+rightButton.addEventListener('click', () => handleControl(39));
 
 startButton.addEventListener("click", initGame);
 restartButton.addEventListener("click", initGame);

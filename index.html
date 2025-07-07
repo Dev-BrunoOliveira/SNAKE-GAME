@@ -12,15 +12,25 @@
         <span>Pontuação: </span>
         <span id="score">0</span>
     </div>
-    <canvas id="game-board" width="400" height="400"></canvas>
+   <canvas id="game-board" width="400" height="400"></canvas>
     <div class="controls">
         <button id="start-button">Iniciar Jogo</button>
     </div>
-    <div id="game-over" class="hidden">
-        <div class="game-over-message">Game Over! Pressione "Reiniciar Jogo" para jogar novamente.</div>
+
+    <div id="mobile-controls">
+        <button id="up-button">↑</button>
+        <div>
+            <button id="left-button">←</button>
+            <button id="down-button">↓</button>
+            <button id="right-button">→</button>
+        </div>
     </div>
+
+    <div id="game-over" class="hidden">
+        <div class="game-over-message">Game Over!</div>
+        <button id="restart-button">Reiniciar Jogo</button>
+    </div>
+
     <script src="script.js"></script>
-    <audio id="eatSound" src="https://www.soundjay.com/button/sounds/button-3.mp3"></audio>
-    <audio id="gameOverSound" src="https://www.soundjay.com/misc/sounds/fail-buzzer-01.mp3"></audio>
 </body>
 </html>
