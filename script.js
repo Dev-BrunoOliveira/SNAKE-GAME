@@ -45,6 +45,7 @@ function main() {
         moveSnake(); 
         
         const isGameOver = checkCollision();
+        
         if (isGameOver) {
             showGameOver();
             drawFood();
@@ -54,17 +55,15 @@ function main() {
 
         drawFood();
         drawSnake();
-        main();
+        main(); 
     }, 100);
 }
 
 function showGameOver() {
-    clearTimeout(gameInterval);
-    gameInterval = null;
-    gameOverElement.style.display = "flex";
-    startButton.style.display = 'block';
+    clearTimeout(gameInterval); 
+    gameInterval = null; 
+    gameOverElement.style.display = "flex"; 
 }
-
 function clearBoard() {
     context.fillStyle = "#ffffff";
     context.fillRect(0, 0, gameBoard.width, gameBoard.height);
