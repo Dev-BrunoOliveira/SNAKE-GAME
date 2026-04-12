@@ -1,5 +1,5 @@
 body {
-    background-image: url(img/flip.png); 
+    background-image: url(img/analogico.jpg); 
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
@@ -47,6 +47,7 @@ h1 {
 #start-button, #restart-button {
     width: 140px;
     height: 35px;
+    margin-top: 10px;
     font-size: 1.3em;
     font-family: Arial, Helvetica, sans-serif;
     background-color: #000000;
@@ -63,7 +64,7 @@ h1 {
 #game-over {
     display: none; 
     position: absolute;
-    top: 50%;
+    top: 35%;
     left: 50%;
     transform: translate(-50%, -50%);
     background-color: rgba(0, 0, 0, 0.85);
