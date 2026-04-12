@@ -1,36 +1,41 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="pt-br">
-<head>
+  <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Retro Games</title>
     <link rel="stylesheet" href="style.css" />
-</head>
-<body>
+    <link rel="icon" type="image/png" href="/img/favicon-96x96.png" sizes="96x96" />
+    <link rel="icon" type="image/svg+xml" href="/img/favicon.svg" />
+    <link rel="shortcut icon" href="/img/favicon.ico" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/img/apple-touch-icon.png" />
+    <link rel="manifest" href="/img/site.webmanifest" />
+  </head>
+  <body>
     <h1>Retro Games</h1>
     <div class="score-container">
-        <span>Pontuação: </span>
-        <span id="score">0</span>
+      <span>Pontuação: </span>
+      <span id="score">0</span>
     </div>
-   <canvas id="game-board" width="400" height="400"></canvas>
+    <canvas id="game-board" width="400" height="400"></canvas>
     <div class="controls">
-        <button id="start-button">Iniciar Jogo</button>
+      <button id="start-button">Iniciar Jogo</button>
     </div>
 
     <div id="mobile-controls">
-        <button id="up-button">↑</button>
-        <div>
-            <button id="left-button">←</button>
-            <button id="down-button">↓</button>
-            <button id="right-button">→</button>
-        </div>
+      <button id="up-button">↑</button>
+      <div>
+        <button id="left-button">←</button>
+        <button id="down-button">↓</button>
+        <button id="right-button">→</button>
+      </div>
     </div>
 
     <div id="game-over" class="hidden">
-        <div class="game-over-message">Game Over!</div>
-        <button id="restart-button">Reiniciar</button>
+      <div class="game-over-message">Game Over!</div>
+      <button id="restart-button">Reiniciar</button>
     </div>
 
     <script src="script.js"></script>
-</body>
+  </body>
 </html>
