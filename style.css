@@ -1,173 +1,172 @@
 body {
-    background-image: url(img/analogico.jpg); 
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    font-family: Arial, Helvetica, sans-serif;
-    
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: flex-start; 
-    height: 100vh;
-    margin: 0;
-    gap: 15px; 
-    padding: 20px 0;
-    box-sizing: border-box; 
+  background-image: url(img/analogico.jpg);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  font-family: Arial, Helvetica, sans-serif;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  height: 100vh;
+  margin: 0;
+  gap: 15px;
+  padding: 20px 0;
+  box-sizing: border-box;
 }
 
 h1 {
-    font-family: 'Press Start 2P', cursive;
-    font-size: 24px;
-    color: #c7d08f; 
-    text-shadow: 3px 3px 0px #000; 
+  font-family: "Press Start 2P", cursive;
+  font-size: 24px;
+  color: #c7d08f;
+  text-shadow: 3px 3px 0px #000;
 }
 
 .score-container {
-    font-family: 'VT323', monospace;
-    font-size: 28px;
-    color: #fff;
-    background: rgba(0, 0, 0, 0.6);
-    padding: 5px 15px;
-    border-radius: 4px;
+  font-family: "VT323", monospace;
+  font-size: 28px;
+  color: #fff;
+  background: rgba(0, 0, 0, 0.6);
+  padding: 5px 15px;
+  border-radius: 4px;
 }
 
 button {
-    font-family: 'VT323', monospace;
-    text-transform: uppercase;
+  font-family: "VT323", monospace;
+  text-transform: uppercase;
 }
 
 h1 {
-    color: #ffffff;
-    text-shadow: 2px 2px 4px #000000;
-    text-align: center;
-    margin: 0; 
+  color: #ffffff;
+  text-shadow: 2px 2px 4px #000000;
+  text-align: center;
+  margin: 0;
 }
 
 .score-container {
-    font-size: 1.5em;
-    color: #ffffff;
-    background-color: rgba(0, 0, 0, 0.5); 
-    padding: 5px 10px;
-    border-radius: 5px;
+  font-size: 1.5em;
+  color: #ffffff;
+  background-color: rgba(0, 0, 0, 0.5);
+  padding: 5px 10px;
+  border-radius: 5px;
 }
 #game-board {
-    background-color: #ffffff; 
-    border: 3px solid #333;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-    width: 90%;
-    max-width: 400px;
-    height: 30px 0px; 
-    image-rendering: pixelated; 
+  background-color: #ffffff;
+  border: 3px solid #333;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  width: 90%;
+  max-width: 400px;
+  height: 30px 0px;
+  image-rendering: pixelated;
 }
 
 .controls {
-    margin-top: 0; 
+  margin-top: 0;
 }
 
-#start-button, #restart-button {
-    width: 140px;
-    height: 55px;
-    margin-top: 10px;
-    font-size: 1.3em;
-    font-family: Arial, Helvetica, sans-serif;
-    background-color: #000000;
-    color: rgb(255, 255, 255);
-    border: 2px solid #fffdfd;
-    border-radius: 7px;
-    cursor: pointer;
+#start-button,
+#restart-button {
+  width: 140px;
+  height: 55px;
+  margin-top: 10px;
+  font-size: 1.3em;
+  font-family: Arial, Helvetica, sans-serif;
+  background-color: #000000;
+  color: rgb(255, 255, 255);
+  border: 2px solid #fffdfd;
+  border-radius: 7px;
+  cursor: pointer;
 }
 
-#start-button:hover, #restart-button:hover {
-    background-color: #161616;
+#start-button:hover,
+#restart-button:hover {
+  background-color: #161616;
 }
 
 #start-button {
-    font-family: 'Press Start 2P', cursive;
-    background-color: #43523d; 
-    color: #c7d08f;            
-    border: 2px solid #c7d08f;
-    padding: 10px 20px;
-    cursor: pointer;
-    text-transform: uppercase;
-    font-size: 12px;
+  font-family: "Press Start 2P", cursive;
+  background-color: #43523d;
+  color: #c7d08f;
+  border: 2px solid #c7d08f;
+  padding: 10px 20px;
+  cursor: pointer;
+  text-transform: uppercase;
+  font-size: 12px;
 }
 
 #start-button:hover {
-    background-color: #c7d08f;
-    color: #43523d;
-    border: 2px solid #43523d;
+  background-color: #c7d08f;
+  color: #43523d;
+  border: 2px solid #43523d;
 }
 
-
 #game-over {
-    display: none; 
-    position: absolute;
-    top: 32%; 
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background-color: #c7d08f; 
-    color: #43523d;
-    padding: 30px;
-    border: 4px solid #43523d;
-    outline: 4px solid #c7d08f; 
-    text-align: center;
-    z-index: 1000;
-    flex-direction: column;
-    gap: 20px;
-    align-items: center;
-    font-family: 'Press Start 2P', cursive;
-    box-shadow: 10px 10px 0px rgba(0, 0, 0, 0.5); 
+  display: none;
+  position: absolute;
+  top: 32%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: #c7d08f;
+  color: #43523d;
+  padding: 30px;
+  border: 4px solid #43523d;
+  outline: 4px solid #c7d08f;
+  text-align: center;
+  z-index: 1000;
+  flex-direction: column;
+  gap: 20px;
+  align-items: center;
+  font-family: "Press Start 2P", cursive;
+  box-shadow: 10px 10px 0px rgba(0, 0, 0, 0.5);
 }
 
 .game-over-message {
-    font-size: 20px;
-    margin-bottom: 10px;
-    text-transform: uppercase;
+  font-size: 20px;
+  margin-bottom: 10px;
+  text-transform: uppercase;
 }
 
 #restart-button {
-    font-family: 'Press Start 2P', cursive;
-    background-color: #43523d;
-    color: #c7d08f;
-    border: none;
-    padding: 10px 20px;
-    cursor: pointer;
-    font-size: 12px;
-    text-transform: uppercase;
-    transition: transform 0.1s;
+  font-family: "Press Start 2P", cursive;
+  background-color: #43523d;
+  color: #c7d08f;
+  border: none;
+  padding: 10px 20px;
+  cursor: pointer;
+  font-size: 12px;
+  text-transform: uppercase;
+  transition: transform 0.1s;
 }
 
 #restart-button:hover {
-    background-color: #2e3a2a;
-    transform: scale(1.05);
+  background-color: #2e3a2a;
+  transform: scale(1.05);
 }
 
 #mobile-controls {
-    display: none; 
-    flex-direction: column;
-    align-items: center;
+  display: none;
+  flex-direction: column;
+  align-items: center;
 }
 
 #mobile-controls button {
-    width: 60px;
-    height: 60px;
-    margin: 5px;
-    font-size: 2em;
-    background-color: #43523d;
-    color: white;
-    border: 2px solid #fff;
-    border-radius: 50%;
-    cursor: pointer;
+  width: 60px;
+  height: 60px;
+  margin: 5px;
+  font-size: 2em;
+  background-color: #43523d;
+  color: white;
+  border: 2px solid #fff;
+  border-radius: 50%;
+  cursor: pointer;
 }
 
-
 @media (max-width: 600px) {
-    .controls {
-        display: none;
-    }
-    
-    #mobile-controls {
-        display: flex;
-    }
+  .controls {
+    display: none;
+  }
+
+  #mobile-controls {
+    display: flex;
+  }
 }
