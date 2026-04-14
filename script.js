@@ -11,8 +11,8 @@ const downButton = document.getElementById("down-button");
 const leftButton = document.getElementById("left-button");
 const rightButton = document.getElementById("right-button");
 
-const PIXEL_ON = "#43523d"; // Cor do pixel "aceso"
-const PIXEL_OFF = "#c7d08f"; // Cor do fundo do LCD
+const PIXEL_ON = "#43523d"; 
+const PIXEL_OFF = "#c7d08f"; 
 const tileSize = 20;
 const boardWidthInTiles = gameBoard.width / tileSize;
 const boardHeightInTiles = gameBoard.height / tileSize;
