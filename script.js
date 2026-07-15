@@ -17,6 +17,8 @@ const desktopInstructions = document.getElementById("desktop-instructions");
 const btnSnake = document.getElementById("btn-snake");
 const btnTetris = document.getElementById("btn-tetris");
 const btnAsteroids = document.getElementById("btn-asteroids");
+const btnPong = document.getElementById("btn-pong");
+const btnSpaceInvaders = document.getElementById("btn-space-invaders");
 
 const PIXEL_ON = "#43523d"; 
 const PIXEL_OFF = "#c7d08f"; 
@@ -91,7 +93,9 @@ function getHighScores() {
   return {
     snake: parseInt(localStorage.getItem('hs-snake')) || 0,
     tetris: parseInt(localStorage.getItem('hs-tetris')) || 0,
-    asteroids: parseInt(localStorage.getItem('hs-asteroids')) || 0
+    asteroids: parseInt(localStorage.getItem('hs-asteroids')) || 0,
+    pong: parseInt(localStorage.getItem('hs-pong')) || 0,
+    'space-invaders': parseInt(localStorage.getItem('hs-space-invaders')) || 0
   };
 }
 
@@ -108,6 +112,8 @@ function updateHighScoresUI() {
   document.getElementById('hs-snake').textContent = hs.snake;
   document.getElementById('hs-tetris').textContent = hs.tetris;
   document.getElementById('hs-asteroids').textContent = hs.asteroids;
+  document.getElementById('hs-pong').textContent = hs.pong;
+  document.getElementById('hs-space-invaders').textContent = hs['space-invaders'];
 }
 updateHighScoresUI();
 
@@ -182,6 +188,10 @@ function startGame(gameType) {
       desktopInstructions.innerHTML = 'MOVER: Esq/Dir<br>ROTACIONAR: Cima<br>SOFT DROP: Baixo<br>HARD DROP: Espaço<br>PAUSAR: P / ESC';
     } else if (gameType === 'asteroids') {
       desktopInstructions.innerHTML = 'ROTACIONAR: Esq/Dir<br>PROPULSÃO: Cima<br>ATIRAR: Espaço<br>PAUSAR: P / ESC';
+    } else if (gameType === 'pong') {
+      desktopInstructions.innerHTML = 'MOVER: Cima/Baixo<br>PAUSAR: P / ESC';
+    } else if (gameType === 'space-invaders') {
+      desktopInstructions.innerHTML = 'MOVER: Esq/Dir<br>ATIRAR: Espaço<br>PAUSAR: P / ESC';
     }
   }
 
@@ -190,6 +200,8 @@ function startGame(gameType) {
   if (gameType === 'snake') currentGame = new SnakeGame();
   else if (gameType === 'tetris') currentGame = new TetrisGame();
   else if (gameType === 'asteroids') currentGame = new AsteroidsGame();
+  else if (gameType === 'pong') currentGame = new PongGame();
+  else if (gameType === 'space-invaders') currentGame = new SpaceInvadersGame();
 
   currentGame.start();
 }
@@ -205,6 +217,8 @@ function handleGameOver(score) {
 btnSnake.addEventListener("click", () => startGame('snake'));
 btnTetris.addEventListener("click", () => startGame('tetris'));
 btnAsteroids.addEventListener("click", () => startGame('asteroids'));
+btnPong.addEventListener("click", () => startGame('pong'));
+btnSpaceInvaders.addEventListener("click", () => startGame('space-invaders'));
 
 menuButton.addEventListener("click", showMenu);
 goMenuButton.addEventListener("click", showMenu);
@@ -866,6 +880,326 @@ class AsteroidsGame {
     this.bullets.forEach(b => {
       context.fillRect(b.x - 1.5, b.y - 1.5, 3, 3);
     });
+
+    this.particles.forEach(p => {
+      if (Math.random() > 0.3) context.fillRect(p.x, p.y, 2, 2);
+    });
+  }
+}
+
+// --- PONG GAME ---
+class PongGame {
+  constructor() {
+    this.WIDTH = gameBoard.width;
+    this.HEIGHT = gameBoard.height;
+    this.PADDLE_WIDTH = 10;
+    this.PADDLE_HEIGHT = 60;
+    this.BALL_SIZE = 10;
+    this.interval = null;
+    this.isGameOver = false;
+
+    this.keys = {};
+    this.handleKeyDown = (e) => { this.keys[e.code] = true; if(e.code === 'ArrowUp' || e.code === 'ArrowDown') e.preventDefault(); };
+    this.handleKeyUp = (e) => { this.keys[e.code] = false; };
+  }
+
+  start() {
+    this.stop();
+    this.isGameOver = false;
+    this.score = 0;
+    scoreElement.textContent = this.score;
+
+    this.paddle = { x: 20, y: this.HEIGHT / 2 - this.PADDLE_HEIGHT / 2, vy: 0 };
+    this.ball = { x: this.WIDTH / 2, y: this.HEIGHT / 2, vx: 4, vy: 4, speed: 4 };
+
+    document.addEventListener("keydown", this.handleKeyDown);
+    document.addEventListener("keyup", this.handleKeyUp);
+
+    const bindBtn = (id, code) => {
+      const btn = document.getElementById(id);
+      btn.addEventListener("touchstart", (e)=>{e.preventDefault(); this.keys[code] = true;});
+      btn.addEventListener("touchend", (e)=>{e.preventDefault(); this.keys[code] = false;});
+      btn.addEventListener("mousedown", (e)=>{e.preventDefault(); this.keys[code] = true;});
+      btn.addEventListener("mouseup", ()=>{this.keys[code] = false;});
+      btn.addEventListener("mouseleave", ()=>{this.keys[code] = false;});
+    };
+    bindBtn("pong-up-button", "ArrowUp");
+    bindBtn("pong-down-button", "ArrowDown");
+
+    this.update = this.update.bind(this);
+    this.interval = requestAnimationFrame(this.update);
+  }
+
+  stop() {
+    if (this.interval) cancelAnimationFrame(this.interval);
+    document.removeEventListener("keydown", this.handleKeyDown);
+    document.removeEventListener("keyup", this.handleKeyUp);
+  }
+
+  update(time = 0) {
+    if (isGlobalPaused || this.isGameOver) return;
+
+    if (this.keys['ArrowUp']) this.paddle.vy = -6;
+    else if (this.keys['ArrowDown']) this.paddle.vy = 6;
+    else this.paddle.vy = 0;
+
+    this.paddle.y += this.paddle.vy;
+    if (this.paddle.y < 0) this.paddle.y = 0;
+    if (this.paddle.y > this.HEIGHT - this.PADDLE_HEIGHT) this.paddle.y = this.HEIGHT - this.PADDLE_HEIGHT;
+
+    this.ball.x += this.ball.vx;
+    this.ball.y += this.ball.vy;
+
+    if (this.ball.y <= 0 || this.ball.y >= this.HEIGHT - this.BALL_SIZE) {
+      this.ball.vy *= -1;
+      Sounds.blip();
+    }
+
+    if (this.ball.x >= this.WIDTH - this.BALL_SIZE) {
+      this.ball.vx *= -1;
+      this.ball.x = this.WIDTH - this.BALL_SIZE;
+      Sounds.blip();
+    }
+
+    if (
+      this.ball.x <= this.paddle.x + this.PADDLE_WIDTH &&
+      this.ball.x + this.BALL_SIZE >= this.paddle.x &&
+      this.ball.y + this.BALL_SIZE >= this.paddle.y &&
+      this.ball.y <= this.paddle.y + this.PADDLE_HEIGHT
+    ) {
+      this.ball.vx *= -1;
+      this.ball.x = this.paddle.x + this.PADDLE_WIDTH;
+      
+      const hitPoint = (this.ball.y + this.BALL_SIZE/2) - (this.paddle.y + this.PADDLE_HEIGHT/2);
+      this.ball.vy = hitPoint * 0.15;
+      
+      this.ball.speed += 0.2;
+      const angle = Math.atan2(this.ball.vy, this.ball.vx);
+      this.ball.vx = Math.cos(angle) * this.ball.speed;
+      this.ball.vy = Math.sin(angle) * this.ball.speed;
+
+      this.score += 10;
+      scoreElement.textContent = this.score;
+      Sounds.coin();
+    }
+
+    if (this.ball.x < 0) {
+      this.stop();
+      handleGameOver(this.score);
+      return;
+    }
+
+    this.draw();
+    this.interval = requestAnimationFrame(this.update);
+  }
+
+  draw() {
+    clearBoard();
+    context.fillStyle = PIXEL_ON;
+    context.fillRect(this.paddle.x, this.paddle.y, this.PADDLE_WIDTH, this.PADDLE_HEIGHT);
+    context.fillRect(this.ball.x, this.ball.y, this.BALL_SIZE, this.BALL_SIZE);
+    context.fillRect(this.WIDTH - 10, 0, 10, this.HEIGHT);
+  }
+}
+
+// --- SPACE INVADERS GAME ---
+class SpaceInvadersGame {
+  constructor() {
+    this.WIDTH = gameBoard.width;
+    this.HEIGHT = gameBoard.height;
+    this.interval = null;
+    this.isGameOver = false;
+
+    this.keys = {};
+    this.handleKeyDown = (e) => { this.keys[e.code] = true; if(e.code === 'Space' || e.code === 'ArrowLeft' || e.code === 'ArrowRight') e.preventDefault(); };
+    this.handleKeyUp = (e) => { this.keys[e.code] = false; };
+  }
+
+  start() {
+    this.stop();
+    this.isGameOver = false;
+    this.score = 0;
+    scoreElement.textContent = this.score;
+
+    this.player = { x: this.WIDTH / 2 - 15, y: this.HEIGHT - 30, w: 30, h: 10, vx: 0 };
+    this.playerBullets = [];
+    this.alienBullets = [];
+    this.aliens = [];
+    this.alienDir = 1;
+    this.alienSpeed = 1;
+    this.particles = [];
+    
+    this.createAliens();
+
+    document.addEventListener("keydown", this.handleKeyDown);
+    document.addEventListener("keyup", this.handleKeyUp);
+
+    const bindBtn = (id, code) => {
+      const btn = document.getElementById(id);
+      btn.addEventListener("touchstart", (e)=>{e.preventDefault(); this.keys[code] = true;});
+      btn.addEventListener("touchend", (e)=>{e.preventDefault(); this.keys[code] = false;});
+      btn.addEventListener("mousedown", (e)=>{e.preventDefault(); this.keys[code] = true;});
+      btn.addEventListener("mouseup", ()=>{this.keys[code] = false;});
+      btn.addEventListener("mouseleave", ()=>{this.keys[code] = false;});
+    };
+    bindBtn("si-left-button", "ArrowLeft");
+    bindBtn("si-right-button", "ArrowRight");
+    bindBtn("si-space-button", "Space");
+
+    this.lastShoot = 0;
+    this.lastAlienMove = 0;
+    this.update = this.update.bind(this);
+    this.interval = requestAnimationFrame(this.update);
+  }
+
+  stop() {
+    if (this.interval) cancelAnimationFrame(this.interval);
+    document.removeEventListener("keydown", this.handleKeyDown);
+    document.removeEventListener("keyup", this.handleKeyUp);
+  }
+
+  createAliens() {
+    this.aliens = [];
+    const rows = 4;
+    const cols = 7;
+    for (let r = 0; r < rows; r++) {
+      for (let c = 0; c < cols; c++) {
+        this.aliens.push({
+          x: 40 + c * 45,
+          y: 40 + r * 35,
+          w: 20,
+          h: 15
+        });
+      }
+    }
+  }
+
+  createExplosion(x, y) {
+    for (let i = 0; i < 10; i++) {
+      this.particles.push({
+        x: x + 10, y: y + 7,
+        vx: (Math.random() - 0.5) * 4, vy: (Math.random() - 0.5) * 4,
+        life: 15 + Math.random() * 10
+      });
+    }
+    Sounds.explosion();
+  }
+
+  update(time = 0) {
+    if (isGlobalPaused || this.isGameOver) {
+      this.lastShoot = time;
+      this.lastAlienMove = time;
+      return;
+    }
+
+    if (this.keys['ArrowLeft']) this.player.x -= 4;
+    if (this.keys['ArrowRight']) this.player.x += 4;
+    if (this.player.x < 0) this.player.x = 0;
+    if (this.player.x > this.WIDTH - this.player.w) this.player.x = this.WIDTH - this.player.w;
+
+    if (this.keys['Space'] && time - this.lastShoot > 400) {
+      this.playerBullets.push({ x: this.player.x + this.player.w / 2 - 2, y: this.player.y, w: 4, h: 10 });
+      Sounds.laser();
+      this.lastShoot = time;
+    }
+
+    this.playerBullets.forEach(b => b.y -= 7);
+    this.playerBullets = this.playerBullets.filter(b => b.y > -10);
+
+    this.alienBullets.forEach(b => b.y += 5);
+    this.alienBullets = this.alienBullets.filter(b => b.y < this.HEIGHT);
+
+    let moveDown = false;
+    if (time - this.lastAlienMove > Math.max(100, 800 - this.alienSpeed * 50)) {
+      this.lastAlienMove = time;
+      
+      let edgeReached = false;
+      this.aliens.forEach(a => {
+        if (a.x + this.alienDir * 15 < 10 || a.x + a.w + this.alienDir * 15 > this.WIDTH - 10) {
+          edgeReached = true;
+        }
+      });
+
+      if (edgeReached) {
+        this.alienDir *= -1;
+        moveDown = true;
+      }
+
+      this.aliens.forEach(a => {
+        if (moveDown) a.y += 20;
+        else a.x += this.alienDir * 15;
+      });
+      
+      if (this.aliens.length > 0 && Math.random() > 0.3) {
+        const shooter = this.aliens[Math.floor(Math.random() * this.aliens.length)];
+        this.alienBullets.push({ x: shooter.x + shooter.w / 2 - 2, y: shooter.y + shooter.h, w: 4, h: 10 });
+      }
+    }
+
+    if (this.aliens.length === 0) {
+      this.alienSpeed = Math.min(12, this.alienSpeed + 1);
+      this.createAliens();
+    }
+
+    for (let i = this.playerBullets.length - 1; i >= 0; i--) {
+      for (let j = this.aliens.length - 1; j >= 0; j--) {
+        const b = this.playerBullets[i];
+        const a = this.aliens[j];
+        if (b && a && b.x < a.x + a.w && b.x + b.w > a.x && b.y < a.y + a.h && b.y + b.h > a.y) {
+          this.playerBullets.splice(i, 1);
+          this.aliens.splice(j, 1);
+          this.score += 20;
+          scoreElement.textContent = this.score;
+          this.createExplosion(a.x, a.y);
+          break;
+        }
+      }
+    }
+
+    this.particles = this.particles.filter(p => p.life > 0);
+    this.particles.forEach(p => { p.x += p.vx; p.y += p.vy; p.life--; });
+
+    let playerHit = false;
+    for (let b of this.alienBullets) {
+      if (b.x < this.player.x + this.player.w && b.x + b.w > this.player.x && b.y < this.player.y + this.player.h && b.y + b.h > this.player.y) {
+        playerHit = true;
+      }
+    }
+    for (let a of this.aliens) {
+      if (a.y + a.h > this.player.y) {
+        playerHit = true;
+      }
+    }
+
+    if (playerHit) {
+      this.createExplosion(this.player.x, this.player.y);
+      this.draw();
+      this.stop();
+      handleGameOver(this.score);
+      return;
+    }
+
+    this.draw();
+    this.interval = requestAnimationFrame(this.update);
+  }
+
+  draw() {
+    clearBoard();
+    context.fillStyle = PIXEL_ON;
+
+    context.fillRect(this.player.x, this.player.y + 4, this.player.w, this.player.h - 4);
+    context.fillRect(this.player.x + 12, this.player.y, 6, 4);
+
+    this.aliens.forEach(a => {
+      context.fillRect(a.x, a.y, a.w, a.h);
+      context.fillStyle = PIXEL_OFF;
+      context.fillRect(a.x + 4, a.y + 4, 3, 3);
+      context.fillRect(a.x + 13, a.y + 4, 3, 3);
+      context.fillStyle = PIXEL_ON;
+    });
+
+    this.playerBullets.forEach(b => context.fillRect(b.x, b.y, b.w, b.h));
+    this.alienBullets.forEach(b => context.fillRect(b.x, b.y, b.w, b.h));
 
     this.particles.forEach(p => {
       if (Math.random() > 0.3) context.fillRect(p.x, p.y, 2, 2);
