@@ -16,27 +16,76 @@
   </head>
   <body>
     <h1>Retro Games</h1>
-    <div class="score-container">
-      <span>Pontuação: </span>
-      <span id="score">0</span>
-    </div>
-    <canvas id="game-board" width="400" height="400"></canvas>
-    <div class="controls">
-      <button id="start-button">Iniciar Jogo</button>
+    <div id="main-menu" class="menu-container">
+      <h2>Escolha o Jogo</h2>
+      <div class="menu-btn-wrapper">
+        <button id="btn-snake">Snake</button>
+        <div class="high-score">Recorde: <span id="hs-snake">0</span></div>
+      </div>
+      <div class="menu-btn-wrapper">
+        <button id="btn-tetris">Tetris</button>
+        <div class="high-score">Recorde: <span id="hs-tetris">0</span></div>
+      </div>
+      <div class="menu-btn-wrapper">
+        <button id="btn-asteroids">Asteroids</button>
+        <div class="high-score">Recorde: <span id="hs-asteroids">0</span></div>
+      </div>
     </div>
 
-    <div id="mobile-controls">
-      <button id="up-button">↑</button>
-      <div>
-        <button id="left-button">←</button>
-        <button id="down-button">↓</button>
-        <button id="right-button">→</button>
+    <div id="game-container" class="hidden">
+      <div class="score-container">
+        <span>Pontuação: </span>
+        <span id="score">0</span>
+      </div>
+      <div class="board-wrapper">
+        <canvas id="game-board" width="400" height="400"></canvas>
+        <div class="scanlines"></div>
+      </div>
+      <div class="controls">
+        <button id="start-button">Iniciar Jogo</button>
+        <button id="menu-button">Menu</button>
+      </div>
+      <div id="desktop-instructions" class="instructions-text"></div>
+    </div>
+
+    <div id="mobile-controls" class="hidden">
+      <!-- Snake Controls (Default) -->
+      <div id="controls-snake" class="controls-group">
+        <button id="up-button">↑</button>
+        <div>
+          <button id="left-button">←</button>
+          <button id="down-button">↓</button>
+          <button id="right-button">→</button>
+        </div>
+      </div>
+      
+      <!-- Tetris Controls -->
+      <div id="controls-tetris" class="controls-group hidden">
+        <button id="tetris-up-button">↻</button>
+        <div>
+          <button id="tetris-left-button">←</button>
+          <button id="tetris-down-button">↓</button>
+          <button id="tetris-right-button">→</button>
+        </div>
+        <button id="tetris-space-button" style="width: 120px; font-size: 1.2em;">DROP</button>
+      </div>
+
+      <!-- Asteroids Controls -->
+      <div id="controls-asteroids" class="controls-group hidden">
+        <button id="ast-up-button">🚀</button>
+        <div>
+          <button id="ast-left-button">↺</button>
+          <button id="ast-space-button">🔥</button>
+          <button id="ast-right-button">↻</button>
+        </div>
       </div>
     </div>
 
     <div id="game-over" class="hidden">
-      <div class="game-over-message">Game Over!</div>
+      <div class="game-over-message" id="go-title">Game Over!</div>
+      <div class="game-over-score">Score: <span id="go-score">0</span></div>
       <button id="restart-button">Reiniciar</button>
+      <button id="go-menu-button">Menu</button>
     </div>
 
     <script src="script.js"></script>

@@ -7,12 +7,77 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: flex-start;
-  height: 100vh;
+  justify-content: center;
+  min-height: 100vh;
   margin: 0;
   gap: 15px;
-  padding: 20px 0;
+  padding: 10px;
   box-sizing: border-box;
+  overflow-x: hidden;
+}
+
+.hidden {
+  display: none !important;
+}
+
+.menu-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  background-color: #c7d08f;
+  padding: 40px 20px;
+  border: 4px solid #43523d;
+  box-shadow: 10px 10px 0px rgba(0, 0, 0, 0.5);
+  width: 90%;
+  max-width: 350px;
+  box-sizing: border-box;
+}
+
+.menu-container h2 {
+  font-family: "Press Start 2P", cursive;
+  color: #43523d;
+  margin-top: 0;
+  text-align: center;
+}
+
+.menu-btn-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+}
+
+.high-score {
+  font-family: "VT323", monospace;
+  font-size: 18px;
+  color: #43523d;
+}
+
+.menu-container button {
+  width: 200px;
+  height: 50px;
+  font-family: "Press Start 2P", cursive;
+  background-color: #43523d;
+  color: #c7d08f;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+  text-transform: uppercase;
+  transition: transform 0.1s;
+}
+
+.menu-container button:hover {
+  background-color: #2e3a2a;
+  transform: scale(1.05);
+}
+
+#game-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  gap: 15px;
 }
 
 h1 {
@@ -50,18 +115,58 @@ h1 {
   padding: 5px 10px;
   border-radius: 5px;
 }
+
+.board-wrapper {
+  position: relative;
+  width: 100%;
+  max-width: 400px;
+  display: flex;
+  justify-content: center;
+}
+
 #game-board {
   background-color: #ffffff;
   border: 3px solid #333;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-  width: 90%;
+  width: 100%;
   max-width: 400px;
-  height: 30px 0px;
+  aspect-ratio: 1 / 1;
+  height: auto;
   image-rendering: pixelated;
+  display: block;
+}
+
+.scanlines {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  right: 3px;
+  bottom: 3px;
+  background: linear-gradient(
+    to bottom,
+    rgba(255,255,255,0),
+    rgba(255,255,255,0) 50%,
+    rgba(0,0,0,0.1) 50%,
+    rgba(0,0,0,0.1)
+  );
+  background-size: 100% 4px;
+  pointer-events: none;
+  box-shadow: inset 0 0 20px rgba(0,0,0,0.3);
 }
 
 .controls {
   margin-top: 0;
+}
+
+.instructions-text {
+  font-family: "Press Start 2P", cursive;
+  font-size: 10px;
+  color: #fff;
+  text-shadow: 2px 2px 0 #000;
+  text-align: center;
+  line-height: 1.5;
+  margin-top: 10px;
+  max-width: 90%;
 }
 
 #start-button,
@@ -79,11 +184,13 @@ h1 {
 }
 
 #start-button:hover,
-#restart-button:hover {
+#restart-button:hover,
+#menu-button:hover,
+#go-menu-button:hover {
   background-color: #161616;
 }
 
-#start-button {
+#start-button, #menu-button {
   font-family: "Press Start 2P", cursive;
   background-color: #43523d;
   color: #c7d08f;
@@ -94,14 +201,14 @@ h1 {
   font-size: 12px;
 }
 
-#start-button:hover {
+#start-button:hover, #menu-button:hover {
   background-color: #c7d08f;
   color: #43523d;
   border: 2px solid #43523d;
 }
 
 #game-over {
-  display: none;
+  display: flex;
   position: absolute;
   top: 32%;
   left: 50%;
@@ -122,11 +229,18 @@ h1 {
 
 .game-over-message {
   font-size: 20px;
-  margin-bottom: 10px;
+  margin-bottom: 5px;
   text-transform: uppercase;
 }
 
-#restart-button {
+.game-over-score {
+  font-family: "VT323", monospace;
+  font-size: 24px;
+  color: #43523d;
+  margin-bottom: 15px;
+}
+
+#restart-button, #go-menu-button {
   font-family: "Press Start 2P", cursive;
   background-color: #43523d;
   color: #c7d08f;
@@ -136,17 +250,25 @@ h1 {
   font-size: 12px;
   text-transform: uppercase;
   transition: transform 0.1s;
+  width: 100%;
 }
 
-#restart-button:hover {
+#restart-button:hover, #go-menu-button:hover {
   background-color: #2e3a2a;
   transform: scale(1.05);
 }
 
 #mobile-controls {
-  display: none;
+  display: flex; /* overridden by hidden class when not needed */
   flex-direction: column;
   align-items: center;
+}
+
+.controls-group {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transform: scale(0.9);
 }
 
 #mobile-controls button {
@@ -159,14 +281,14 @@ h1 {
   border: 2px solid #fff;
   border-radius: 50%;
   cursor: pointer;
+  touch-action: manipulation;
 }
 
 @media (max-width: 600px) {
   .controls {
     display: none;
   }
-
-  #mobile-controls {
-    display: flex;
+  .instructions-text {
+    display: none;
   }
 }
